@@ -1,23 +1,13 @@
 steps:
-  # Docker Build
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 
-           'asia-southeast2-docker.pkg.dev/civic-gate-353504/repo-bima/myimage', 
-           '.']
-
-  # Docker Push
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 
-           'asia-southeast2-docker.pkg.dev/civic-gate-353504/repo-bima/myimage']
-
-  # Entrypoint, timeout and environment variables
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'gcloud'
-    timeout: 240s
-    args: ['compute', 'instances', 
-           'create-with-container', 'my-vm-name',
-           '--container-image', 
-           'asia-southeast2-docker.pkg.dev/civic-gate-353504/repo-bima/myimage']
-    env:
-      - 'CLOUDSDK_COMPUTE_REGION=asia-southeast2'
-      - 'CLOUDSDK_COMPUTE_ZONE=asia-southeast2-a'
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/civic-gate-353504/IMAGE', '.']
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/civic-gate-353504/IMAGE']
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['run', 'deploy', 'SERVICE-NAME', '--image', 'gcr.io/civic-gate-353504/IMAGE', '--region', 'REGION']
+images:
+- gcr.io/PROJECT_ID/IMAGE
