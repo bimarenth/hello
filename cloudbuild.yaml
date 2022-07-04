@@ -1,0 +1,23 @@
+steps:
+  # Docker Build
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 
+           'asia-southeast2-docker.pkg.dev/civic-gate-353504/repo-bima/myimage', 
+           '.']
+
+  # Docker Push
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 
+           'asia-southeast2-docker.pkg.dev/civic-gate-353504/repo-bima/myimage']
+
+  # Entrypoint, timeout and environment variables
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    timeout: 240s
+    args: ['compute', 'instances', 
+           'create-with-container', 'my-vm-name',
+           '--container-image', 
+           'asia-southeast2-docker.pkg.dev/civic-gate-353504/repo-bima/myimage']
+    env:
+      - 'CLOUDSDK_COMPUTE_REGION=asia-southeast2'
+      - 'CLOUDSDK_COMPUTE_ZONE=asia-southeast2-a'
