@@ -11,3 +11,5 @@ steps:
   args: ['run', 'deploy', 'test-bima', '--image', 'gcr.io/civic-gate-353504/bima-image', '--region', 'asia-southeast2']
 images:
 - gcr.io/civic-gate-353504/bima-image
+options:
+  logging: CLOUD_LOGGING_ONLY  
